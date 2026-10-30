@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Personal website of Joha Adham" />
+    <title>Joha Adham | Personal Website</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="Style/style.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav-wrap">
+            <div class="brand">Joha <span>Adham</span></div>
+            <button class="nav-toggle" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#gallery">Gallery</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="container hero-grid">
+                <div class="hero-copy reveal">
+                    <p class="eyebrow" id="greeting">Good day!</p>
+                    <h1>Hello, I am <span>Joha Adham</span></h1>
+                    <p class="intro">
+                        I am a cheerful student in class 3, and I am very confident in English.
+                        I can speak with foreign people and communicate clearly with kindness.
+                    </p>
+                    <div class="cta-row">
+                        <a class="btn primary" href="#about">Know me</a>
+                        <a class="btn secondary" href="#gallery">View gallery</a>
+                    </div>
+                    <ul class="mini-stats">
+                        <li><strong>Class 3</strong><span>Student</span></li>
+                        <li><strong>English</strong><span>Expert</span></li>
+                        <li><strong>Global</strong><span>Friendly speaker</span></li>
+                    </ul>
+                </div>
+
+                <div class="hero-card reveal">
+                    <div class="profile-frame">
+                        <img src="assets/WhatsApp Image 2026-05-13 at 9.06.17 PM.jpeg" alt="Joha Adham portrait" />
+                    </div>
+                    <div class="card-badge">Student & Speaker</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about" id="about">
+            <div class="container">
+                <div class="section-heading reveal">
+                    <p class="eyebrow">About Me</p>
+                    <h2>My life, my family, and my strengths</h2>
+                </div>
+
+                <div class="about-grid">
+                    <div class="info-card reveal">
+                        <h3>Family</h3>
+                        <p><strong>Father:</strong> Ziaur Rahman</p>
+                        <p><strong>Mother:</strong> Anju Manara</p>
+                        <p><strong>Me:</strong> Joha Adham</p>
+                    </div>
+
+                    <div class="info-card reveal">
+                        <h3>Education</h3>
+                        <p>I am a student in class 3 and I enjoy learning every day.</p>
+                        <p>I love reading, writing, and speaking in English.</p>
+                    </div>
+
+                    <div class="info-card reveal">
+                        <h3>Communication</h3>
+                        <p>I am expert in English and can talk to a foreign person confidently.</p>
+                        <p>I believe speaking politely and clearly is a major strength.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="skills" id="skills">
+            <div class="container">
+                <div class="section-heading reveal">
+                    <p class="eyebrow">My Skills</p>
+                    <h2>What makes me special</h2>
+                </div>
+
+                <div class="skill-grid">
+                    <div class="skill-card reveal">
+                        <span class="icon">A</span>
+                        <h3>English Expert</h3>
+                        <p>I speak English confidently and understand it well.</p>
+                    </div>
+                    <div class="skill-card reveal">
+                        <span class="icon">C</span>
+                        <h3>Confident Speaker</h3>
+                        <p>I can talk to foreign people with respect and clarity.</p>
+                    </div>
+                    <div class="skill-card reveal">
+                        <span class="icon">L</span>
+                        <h3>Learning Spirit</h3>
+                        <p>I stay curious and want to learn more each day.</p>
+                    </div>
+                    <div class="skill-card reveal">
+                        <span class="icon">F</span>
+                        <h3>Family Love</h3>
+                        <p>My parents inspire me to be kind, brave, and sincere.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gallery" id="gallery">
+            <div class="container">
+                <div class="section-heading reveal">
+                    <p class="eyebrow">My Gallery</p>
+                    <h2>Moments from my world</h2>
+                </div>
+
+                <div class="gallery-grid">
+                    <figure class="gallery-item reveal">
+                        <img src="assets/B-2 Stealth Bomber.png" alt="A cool image" />
+                    </figure>
+                    <figure class="gallery-item reveal">
+                        <img src="assets/Uttaraaaa.jpeg" alt="A profile shot" />
+                    </figure>
+                    <figure class="gallery-item reveal wide">
+                        <img src="assets/WhatsApp Image 2026-05-13 at 9.06.17 PM.jpeg" alt="A smiling moment" />
+                    </figure>
+                    <figure class="gallery-item reveal video-card">
+                        <video controls>
+                            <source src="assets/What.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </figure>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-wrap">
+            <p>© <span id="year"></span> Joha Adham</p>
+            <p>Made with love and confidence</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
