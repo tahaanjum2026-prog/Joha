@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14211b">
+  <title>Blockbound — Build your own wild world</title>
+  <link rel="stylesheet" href="../Style.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Blockbound home">
+        <span class="brand-cube" aria-hidden="true"><i></i><b></b></span>
+        <span>BLOCK<span class="brand-light">BOUND</span></span>
+      </a>
+      <div class="topbar-world"><span class="live-dot"></span> YOUR WORLD <span class="topbar-divider">/</span> PINEFALL</div>
+      <button class="sound-button" id="pauseButton" type="button" aria-label="Pause game">
+        <span aria-hidden="true">Ⅱ</span> <span class="pause-label">PAUSE</span>
+      </button>
+    </header>
+
+    <section class="world-heading">
+      <div>
+        <p class="eyebrow"><span class="sun-icon">☀</span> DAY 01 <span class="heading-dot">·</span> CLEAR SKIES</p>
+        <h1>A little world, <em>all yours.</em></h1>
+      </div>
+      <div class="world-coordinates"><span class="coordinate-icon" aria-hidden="true">⌖</span> <span id="coordinates">X 07 &nbsp; Y 06</span></div>
+    </section>
+
+    <section class="game-frame" aria-label="Playable block-building world">
+      <div class="game-canvas-wrap">
+        <canvas id="world" aria-label="Isometric block world. Use WASD or arrow keys to move. Click nearby trees and rocks to gather materials." tabindex="0"></canvas>
+        <div class="canvas-vignette" aria-hidden="true"></div>
+        <div class="hud-top">
+          <div class="player-status"><span class="avatar-dot">✦</span><span><b>ROOKIE BUILDER</b><small>EXPLORER · LEVEL 1</small></span></div>
+          <div class="weather-pill"><span>☀</span> 24° <i></i> DAYLIGHT</div>
+        </div>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        <div class="hud-bottom">
+          <div class="health" aria-label="Health: 5 hearts"><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span class="empty-heart">♥</span></div>
+          <div class="hotbar" role="toolbar" aria-label="Block inventory">
+            <button class="slot selected" data-item="grass" aria-label="Select grass block"><span class="slot-icon">▦</span><small>8</small></button>
+            <button class="slot" data-item="wood" aria-label="Select wood block"><span class="slot-icon">▤</span><small id="woodCount">0</small></button>
+            <button class="slot" data-item="stone" aria-label="Select stone block"><span class="slot-icon">◩</span><small id="stoneCount">0</small></button>
+            <button class="slot" data-item="flower" aria-label="Select flower"><span class="slot-icon">✿</span><small id="flowerCount">0</small></button>
+            <button class="slot slot-empty" data-item="empty" aria-label="Empty inventory slot"><span class="slot-icon">＋</span><small>—</small></button>
+            <button class="slot slot-empty" data-item="empty" aria-label="Empty inventory slot"><span class="slot-icon">＋</span><small>—</small></button>
+            <span class="slot-hint">1 — 4</span>
+          </div>
+          <div class="build-count"><span class="build-cube">▦</span> BLOCKS PLACED <b id="placedCount">0</b></div>
+        </div>
+        <div class="pause-overlay" id="pauseOverlay" hidden>
+          <div class="pause-card"><span class="pause-mark">Ⅱ</span><h2>Taking a breather?</h2><p>Your little world will be right here.</p><button id="resumeButton" type="button">BACK TO BUILDING <span>→</span></button></div>
+        </div>
+      </div>
+      <div class="game-footer">
+        <div class="game-tip"><span class="tip-sparkle">✦</span><span id="gameTip">Wander a little. There’s always something to discover.</span></div>
+        <div class="controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> MOVE</span><i></i><span><kbd>CLICK</kbd> GATHER</span><i></i><span><kbd>E</kbd> PLACE</span></div>
+      </div>
+    </section>
+
+    <section class="adventure-row">
+      <div class="mission-card">
+        <div class="section-label"><span class="mission-icon">✦</span> TODAY'S LITTLE ADVENTURE</div>
+        <h2>Make this place <em>your place.</em></h2>
+        <p>Gather what you need, then add a little something of your own.</p>
+        <div class="quest-list">
+          <div class="quest"><span class="quest-check" id="woodCheck">○</span><span>Gather <b>5 wood</b></span><div class="quest-track"><i id="woodProgress"></i></div><small id="woodProgressText">0/5</small></div>
+          <div class="quest"><span class="quest-check" id="stoneCheck">○</span><span>Gather <b>4 stone</b></span><div class="quest-track"><i id="stoneProgress"></i></div><small id="stoneProgressText">0/4</small></div>
+          <div class="quest"><span class="quest-check" id="buildCheck">○</span><span>Place <b>3 blocks</b></span><div class="quest-track"><i id="buildProgress"></i></div><small id="buildProgressText">0/3</small></div>
+        </div>
+        <div class="mission-reward"><span>✧</span> <b>Little by little, a world takes shape.</b></div>
+      </div>
+      <aside class="guide-card">
+        <div class="guide-copy"><span class="section-label">A FEW FRIENDLY TIPS</span><h3>Make yourself<br>at home.</h3><p>Collect wood from trees and stone from rocky patches. Pick a block, then press <kbd>E</kbd> to build.</p><div class="guide-tag"><span>☘</span> NO WRONG WAY TO PLAY</div></div>
+        <div class="guide-art" aria-hidden="true"><span class="guide-sun"></span><span class="guide-hill hill-back"></span><span class="guide-hill hill-front"></span><span class="guide-tree">♣</span><span class="guide-cube">▦</span></div>
+      </aside>
+    </section>
+
+    <section class="field-notes">
+      <div class="field-heading"><div><p class="eyebrow">A LITTLE INSPIRATION</p><h2>Worlds worth <em>wondering about.</em></h2></div><span class="field-caption">Your next idea might be right around the corner <b>↗</b></span></div>
+      <div class="inspiration-grid">
+        <article class="inspiration-card">
+          <div class="inspiration-image"><img src="../Screenshot 2026-11-03 095840.png" alt="Golden-hour block village with a glowing garden tower"><span class="image-tag">GARDEN AT GOLDEN HOUR</span></div>
+          <div class="inspiration-info"><span class="inspiration-number">01</span><div><h3>The lantern garden</h3><p>Warm lights, winding paths, and a place to linger.</p></div><span class="inspiration-arrow">↗</span></div>
+        </article>
+        <article class="inspiration-card">
+          <div class="inspiration-image"><img src="../Screenshot 2026-11-03 095910.png" alt="A cozy circular wooden greenhouse surrounded by a forest"><span class="image-tag">A QUIET PLACE TO GROW</span></div>
+          <div class="inspiration-info"><span class="inspiration-number">02</span><div><h3>The woodland greenhouse</h3><p>A little glass-and-wood hideaway in the trees.</p></div><span class="inspiration-arrow">↗</span></div>
+        </article>
+        <article class="inspiration-card">
+          <div class="inspiration-image logo-image"><img src="../Screenshot 2026-11-03 095858.png" alt="Pixelated block-building game logo on a grassy dirt texture"><span class="image-tag">THE JOY OF BLOCKS</span></div>
+          <div class="inspiration-info"><span class="inspiration-number">03</span><div><h3>Start with one block</h3><p>Every grand idea begins with a little patch of dirt.</p></div><span class="inspiration-arrow">↗</span></div>
+        </article>
+        <article class="inspiration-card">
+          <div class="inspiration-image"><img src="../Screenshot 2026-11-03 095940.png" alt="A stone desert temple under a peach-colored evening sky"><span class="image-tag">OUT PAST THE PINES</span></div>
+          <div class="inspiration-info"><span class="inspiration-number">04</span><div><h3>The faraway ruins</h3><p>A reminder that the best paths lead somewhere new.</p></div><span class="inspiration-arrow">↗</span></div>
+        </article>
+      </div>
+    </section>
+    <footer class="page-footer"><span>BLOCKBOUND <i>✦</i> MADE FOR LITTLE ADVENTURES</span><span>YOUR WORLD, YOUR WAY <b>☘</b></span></footer>
+  </main>
+
+  <script>
+    (() => {
+      const canvas = document.querySelector("#world");
+      const ctx = canvas.getContext("2d");
+      const toast = document.querySelector("#toast");
+      const coordinates = document.querySelector("#coordinates");
+      const counts = { grass: 8, wood: 0, stone: 0, flower: 0 };
+      const cols = 15;
+      const rows = 13;
+      const player = { x: 7, y: 6, facing: { x: 1, y: 0 } };
+      const items = ["grass", "wood", "stone", "flower"];
+      let selected = "grass";
+      let placed = 0;
+      let toastTimer;
+      let scale = 1;
+      let tileWidth = 60;
+      let tileHeight = 32;
+      let originY = 0;
+      let features = new Map();
+      let placedBlocks = new Map();
+      let terrain = [];
+
+      function randomGenerator(seed) {
+        let value = seed;
+        return () => {
+          value = (value * 1664525 + 1013904223) % 4294967296;
+          return value / 4294967296;
+        };
+      }
+
+      function key(x, y) { return `${x},${y}`; }
+
+      function newWorld() {
+        const random = randomGenerator(481516);
+        terrain = Array.from({ length: rows }, (_, y) => Array.from({ length: cols }, (_, x) => {
+          const shade = Math.floor(random() * 4);
+          return shade;
+        }));
+        features.clear();
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            if (Math.abs(x - player.x) + Math.abs(y - player.y) < 3) continue;
+            const chance = random();
+            if (chance > 0.91) features.set(key(x, y), { type: "tree", variant: Math.floor(random() * 3) });
+            else if (chance > 0.86) features.set(key(x, y), { type: "stone", variant: Math.floor(random() * 3) });
+            else if (chance > 0.81) features.set(key(x, y), { type: "flower", variant: Math.floor(random() * 4) });
+          }
+        }
+      }
+
+      function project(x, y) {
+        return {
+          x: canvas.clientWidth / 2 + (x - y) * tileWidth / 2,
+          y: originY + (x + y) * tileHeight / 2
+        };
+      }
+
+      function polygon(points, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+        for (let i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function drawTile(x, y, shade) {
+        const p = project(x, y);
+        const hw = tileWidth / 2;
+        const hh = tileHeight / 2;
+        const depth = 8 * scale;
+        const top = [p.x, p.y - hh];
+        const right = [p.x + hw, p.y];
+        const bottom = [p.x, p.y + hh];
+        const left = [p.x - hw, p.y];
+        const greens = ["#507e47", "#57854b", "#5b894e", "#4e7a45"];
+        polygon([right, bottom, [bottom[0], bottom[1] + depth], [right[0], right[1] + depth]], "#416746");
+        polygon([left, bottom, [bottom[0], bottom[1] + depth], [left[0], left[1] + depth]], "#385d40");
+        polygon([top, right, bottom, left], greens[shade]);
+        polygon([[p.x - hw * .7, p.y - hh * .1], [p.x, p.y + hh], left], "rgba(140,184,99,.13)");
+        if ((x * 3 + y * 7) % 5 === 0) {
+          ctx.fillStyle = "rgba(190,205,121,.38)";
+          ctx.fillRect(p.x - 3 * scale, p.y - 2 * scale, 2 * scale, 2 * scale);
+          ctx.fillRect(p.x + 8 * scale, p.y + 3 * scale, 2 * scale, 2 * scale);
+        }
+      }
+
+      function drawTree(p, variant) {
+        const s = scale;
+        const trunkHeight = 21 * s;
+        ctx.fillStyle = "rgba(25,41,28,.2)";
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y + 4 * s, 18 * s, 6 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#79583b";
+        ctx.fillRect(p.x - 4 * s, p.y - trunkHeight, 8 * s, trunkHeight + 4 * s);
+        ctx.fillStyle = "#9c754c";
+        ctx.fillRect(p.x - 3 * s, p.y - trunkHeight, 2 * s, trunkHeight);
+        const leaf = ["#3c714a", "#477c4e", "#376a47"][variant];
+        ctx.fillStyle = "#2c573f";
+        ctx.fillRect(p.x - 17 * s, p.y - 46 * s, 34 * s, 24 * s);
+        ctx.fillStyle = leaf;
+        ctx.fillRect(p.x - 13 * s, p.y - 52 * s, 26 * s, 22 * s);
+        ctx.fillStyle = "#5d9256";
+        ctx.fillRect(p.x - 8 * s, p.y - 50 * s, 10 * s, 5 * s);
+        ctx.fillRect(p.x + 7 * s, p.y - 40 * s, 6 * s, 6 * s);
+        ctx.fillStyle = "rgba(23,51,36,.4)";
+        ctx.fillRect(p.x + 12 * s, p.y - 46 * s, 5 * s, 20 * s);
+      }
+
+      function drawStone(p, variant) {
+        const s = scale;
+        const w = (18 + variant * 2) * s;
+        ctx.fillStyle = "rgba(25,41,28,.2)";
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y + 2 * s, 14 * s, 5 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+        polygon([[p.x - w, p.y - 4 * s], [p.x - 10 * s, p.y - 16 * s], [p.x + 6 * s, p.y - 19 * s], [p.x + w, p.y - 8 * s], [p.x + 12 * s, p.y + 1 * s], [p.x - 7 * s, p.y + 2 * s]], "#66746d");
+        polygon([[p.x - w, p.y - 4 * s], [p.x - 10 * s, p.y - 16 * s], [p.x - 4 * s, p.y - 8 * s], [p.x - 8 * s, p.y + 1 * s]], "#839086");
+        polygon([[p.x - 8 * s, p.y + 1 * s], [p.x - 4 * s, p.y - 8 * s], [p.x + w, p.y - 8 * s], [p.x + 12 * s, p.y + 1 * s]], "#4d6058");
+        ctx.fillStyle = "#b0b9a2";
+        ctx.fillRect(p.x - 4 * s, p.y - 13 * s, 5 * s, 3 * s);
+      }
+
+      function drawFlower(p, variant) {
+        const s = scale;
+        const colors = ["#f1bc68", "#e9877c", "#e7d77c", "#b39adc"];
+        ctx.strokeStyle = "#426d47";
+        ctx.lineWidth = 2 * s;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x, p.y - 12 * s);
+        ctx.stroke();
+        ctx.fillStyle = colors[variant];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 13 * s, 4 * s, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#f4e7a0";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 13 * s, 1.4 * s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawPlaced(p, type) {
+        const s = scale;
+        const colors = { grass: ["#82a960", "#5e8248", "#4a6d3e"], wood: ["#c49765", "#9a704a", "#775539"], stone: ["#a0a9a0", "#7d8981", "#606e67"], flower: ["#d9b866", "#b38e49", "#8c693e"] };
+        const h = 16 * s, w = 12 * s;
+        polygon([[p.x, p.y - h], [p.x + w, p.y - h / 2], [p.x, p.y], [p.x - w, p.y - h / 2]], colors[type][0]);
+        polygon([[p.x - w, p.y - h / 2], [p.x, p.y], [p.x, p.y + h / 2], [p.x - w, p.y]], colors[type][1]);
+        polygon([[p.x, p.y], [p.x + w, p.y - h / 2], [p.x + w, p.y], [p.x, p.y + h / 2]], colors[type][2]);
+      }
+
+      function drawPlayer(p) {
+        const s = scale;
+        ctx.fillStyle = "rgba(25,41,28,.23)";
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y + 2 * s, 11 * s, 4 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#47392f";
+        ctx.fillRect(p.x - 8 * s, p.y - 23 * s, 16 * s, 20 * s);
+        ctx.fillStyle = "#d89362";
+        ctx.fillRect(p.x - 7 * s, p.y - 34 * s, 14 * s, 13 * s);
+        ctx.fillStyle = "#4a3730";
+        ctx.fillRect(p.x - 8 * s, p.y - 37 * s, 16 * s, 5 * s);
+        ctx.fillRect(p.x - 8 * s, p.y - 34 * s, 4 * s, 3 * s);
+        ctx.fillStyle = "#f0d7b4";
+        ctx.fillRect(p.x + 2 * s, p.y - 29 * s, 2 * s, 2 * s);
+        ctx.fillStyle = "#f0eee0";
+        ctx.fillRect(p.x - 6 * s, p.y - 23 * s, 12 * s, 6 * s);
+        ctx.fillStyle = "#6c8770";
+        ctx.fillRect(p.x - 7 * s, p.y - 17 * s, 14 * s, 4 * s);
+      }
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const ratio = window.devicePixelRatio || 1;
+        canvas.width = Math.round(rect.width * ratio);
+        canvas.height = Math.round(rect.height * ratio);
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        const mapWidth = (cols + rows) * 30;
+        const mapHeight = (cols + rows) * 16;
+        scale = Math.min(1, (rect.width - 30) / mapWidth, (rect.height - 44) / mapHeight);
+        tileWidth = 60 * scale;
+        tileHeight = 32 * scale;
+        originY = (rect.height - (cols + rows - 2) * tileHeight / 2) / 2 + 5 * scale;
+        render();
+      }
+
+      function render() {
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        if (!width || !height) return;
+        const sky = ctx.createLinearGradient(0, 0, 0, height);
+        sky.addColorStop(0, "#a9c5a5");
+        sky.addColorStop(.55, "#d4d5a4");
+        sky.addColorStop(1, "#718d62");
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, width, height);
+        const glow = ctx.createRadialGradient(width * .77, height * .19, 3, width * .77, height * .19, height * .44);
+        glow.addColorStop(0, "rgba(255,244,180,.46)");
+        glow.addColorStop(1, "rgba(255,244,180,0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = "rgba(255,247,205,.74)";
+        ctx.beginPath();
+        ctx.arc(width * .77, height * .19, 20 * scale, 0, Math.PI * 2);
+        ctx.fill();
+        for (let sum = 0; sum < cols + rows - 1; sum++) {
+          for (let x = Math.max(0, sum - rows + 1); x <= Math.min(cols - 1, sum); x++) {
+            const y = sum - x;
+            const p = project(x, y);
+            drawTile(x, y, terrain[y][x]);
+            const placedType = placedBlocks.get(key(x, y));
+            if (placedType) drawPlaced(p, placedType);
+            const feature = features.get(key(x, y));
+            if (feature?.type === "tree") drawTree(p, feature.variant);
+            else if (feature?.type === "stone") drawStone(p, feature.variant);
+            else if (feature?.type === "flower") drawFlower(p, feature.variant);
+            if (player.x === x && player.y === y) drawPlayer(p);
+          }
+        }
+        coordinates.textContent = `X ${String(player.x).padStart(2, "0")}   Y ${String(player.y).padStart(2, "0")}`;
+      }
+
+      function announce(message) {
+        toast.textContent = message;
+        toast.classList.add("visible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("visible"), 2000);
+      }
+
+      function updateQuest() {
+        const objectives = [
+          ["wood", 5, "woodProgress", "woodProgressText", "woodCheck"],
+          ["stone", 4, "stoneProgress", "stoneProgressText", "stoneCheck"],
+          [null, 3, "buildProgress", "buildProgressText", "buildCheck"]
+        ];
+        for (const [type, target, bar, label, check] of objectives) {
+          const amount = type ? counts[type] : placed;
+          document.getElementById(bar).style.width = `${Math.min(amount / target * 100, 100)}%`;
+          document.getElementById(label).textContent = `${Math.min(amount, target)}/${target}`;
+          document.getElementById(check).textContent = amount >= target ? "✓" : "○";
+          document.getElementById(check).classList.toggle("complete", amount >= target);
+        }
+        for (const type of items) {
+          const slotCount = document.querySelector(`[data-item="${type}"] small`);
+          if (slotCount) slotCount.textContent = counts[type];
+        }
+        document.getElementById("placedCount").textContent = placed;
+        if (counts.wood >= 5 && counts.stone >= 4 && placed >= 3) {
+          document.getElementById("gameTip").textContent = "Adventure complete! Keep making this little world your own.";
+        }
+      }
+
+      function walk(dx, dy) {
+        const x = player.x + dx;
+        const y = player.y + dy;
+        if (x < 0 || y < 0 || x >= cols || y >= rows) return;
+        player.x = x;
+        player.y = y;
+        player.facing = { x: dx, y: dy };
+        render();
+      }
+
+      function harvest(x, y) {
+        const feature = features.get(key(x, y));
+        if (!feature) return false;
+        if (feature.type === "tree") {
+          counts.wood += 1;
+          announce("Gathered a wood block. Nice find!");
+        } else if (feature.type === "stone") {
+          counts.stone += 1;
+          announce("A little stone for your next build.");
+        } else {
+          counts.flower += 1;
+          announce("A tiny bit of color for your world.");
+        }
+        features.delete(key(x, y));
+        updateQuest();
+        render();
+        return true;
+      }
+
+      function placeBlock() {
+        const x = player.x + player.facing.x;
+        const y = player.y + player.facing.y;
+        if (x < 0 || y < 0 || x >= cols || y >= rows) return;
+        if (placedBlocks.has(key(x, y)) || features.has(key(x, y))) {
+          announce("That spot is already taken. Try another block.");
+          return;
+        }
+        if (counts[selected] < 1) {
+          announce(`Gather a ${selected} block before placing one.`);
+          return;
+        }
+        counts[selected]--;
+        placedBlocks.set(key(x, y), selected);
+        placed++;
+        updateQuest();
+        render();
+        announce("There it is. One more piece of your world.");
+      }
+
+      function selectItem(type) {
+        if (!items.includes(type)) return;
+        selected = type;
+        document.querySelectorAll(".slot").forEach(slot => slot.classList.toggle("selected", slot.dataset.item === type));
+      }
+
+      document.querySelectorAll(".slot").forEach(slot => {
+        slot.addEventListener("click", () => selectItem(slot.dataset.item));
+      });
+
+      canvas.addEventListener("click", event => {
+        const rect = canvas.getBoundingClientRect();
+        const localX = event.clientX - rect.left;
+        const localY = event.clientY - rect.top;
+        const projectedY = localY - originY;
+        const projectedX = localX - canvas.clientWidth / 2;
+        const tileX = Math.round((projectedX / (tileWidth / 2) + projectedY / (tileHeight / 2)) / 2);
+        const tileY = Math.round((projectedY / (tileHeight / 2) - projectedX / (tileWidth / 2)) / 2);
+        if (tileX < 0 || tileY < 0 || tileX >= cols || tileY >= rows) return;
+        const distance = Math.abs(tileX - player.x) + Math.abs(tileY - player.y);
+        if (distance <= 1) harvest(tileX, tileY);
+        else {
+          const dx = Math.sign(tileX - player.x);
+          const dy = Math.sign(tileY - player.y);
+          walk(Math.abs(tileX - player.x) > Math.abs(tileY - player.y) ? dx : 0, Math.abs(tileX - player.x) > Math.abs(tileY - player.y) ? 0 : dy);
+          announce("A step closer. Click a nearby tree or rock to gather.");
+        }
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          togglePause();
+          return;
+        }
+        if (event.target instanceof Element && event.target.closest("input, textarea, select, [contenteditable='true']")) return;
+        if (!document.getElementById("pauseOverlay").hidden) return;
+        const keyName = event.key.toLowerCase();
+        const movement = { w: [0, -1], arrowup: [0, -1], s: [0, 1], arrowdown: [0, 1], a: [-1, 0], arrowleft: [-1, 0], d: [1, 0], arrowright: [1, 0] };
+        if (movement[keyName]) {
+          event.preventDefault();
+          walk(...movement[keyName]);
+        } else if (/^[1-4]$/.test(keyName)) {
+          selectItem(items[Number(keyName) - 1]);
+        } else if (keyName === "e") {
+          event.preventDefault();
+          placeBlock();
+        } else if (keyName === "f" || keyName === " ") {
+          event.preventDefault();
+          const x = player.x + player.facing.x;
+          const y = player.y + player.facing.y;
+          if (!harvest(x, y)) announce("Nothing to gather there. Wander near a tree or a rocky patch.");
+        } else if (event.key === "Escape") {
+          togglePause();
+        }
+      });
+
+      canvas.addEventListener("contextmenu", event => {
+        event.preventDefault();
+        placeBlock();
+      });
+
+      function togglePause(force) {
+        const overlay = document.getElementById("pauseOverlay");
+        const paused = force ?? overlay.hidden;
+        overlay.hidden = !paused;
+        document.getElementById("pauseButton").setAttribute("aria-label", paused ? "Resume game" : "Pause game");
+      }
+      document.getElementById("pauseButton").addEventListener("click", () => togglePause());
+      document.getElementById("resumeButton").addEventListener("click", () => togglePause(false));
+      window.addEventListener("resize", resize);
+      newWorld();
+      updateQuest();
+      resize();
+    })();
+  </script>
+</body>
+</html>
